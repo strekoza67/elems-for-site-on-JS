@@ -1,15 +1,14 @@
+const getId = (link) => link.getAttribute('href').replace('#', '');
+
 let section = document.querySelectorAll('.section');
 let observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      console.log('entry.isIntersecting', entry.target.id);
-
       document.querySelectorAll('.nav-list__item-link').forEach(link => {
-        if (link.getAttribute('href').replace('#', '') === entry.target.id) {
-          link.classList.add('nav-list__item-link--active');
-        } else {
-          link.classList.remove('nav-list__item-link--active');
-        }
+        link.classList.toggle(
+          'nav-list__item-link--active',
+          getId(link) === entry.target.id
+        );
       });
     }
   });
@@ -23,7 +22,14 @@ section.forEach(item => {
 
 document.querySelector('.nav-list').addEventListener('click', (e) => {
   if (e.target.matches('.nav-list__item-link')) {
-    console.log('clicked');
+    e.preventDefault();
+
+    const id = e.target.getAttribute('href').replace('#', '');
+
+    window.scrollTo({
+      top: document.getElementById(id).offsetTop,
+      behavior: 'smooth',
+    });
   }
 });
 
